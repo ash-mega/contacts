@@ -26,30 +26,26 @@ import java.util.List;
 
 public class ContactsActivity extends AppCompatActivity {
     
-    private RecyclerView listView;
-    
-    private List<Contact> data;
-    
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
-        listView = findViewById(R.id.contacts_list_view);
+        RecyclerView listView = findViewById(R.id.contacts_list_view);
         listView.setLayoutManager(new LinearLayoutManager(this));
         
-        if (hasPermission(Manifest.permission.READ_CONTACTS,1)) {
+        if (hasPermission(Manifest.permission.READ_CONTACTS)) {
             ContactsLoader loader = new ContactsLoader(this);
-            data = loader.getContacts();
+            List<Contact> data = loader.getContacts();
             ContactsAdapter adapter = new ContactsAdapter(data);
             listView.setAdapter(adapter);
         }
     }
     
-    private Boolean hasPermission(String permission,int requestCode) {
+    private Boolean hasPermission(String permission) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             boolean hasPermission = (ContextCompat.checkSelfPermission(this,permission) == PackageManager.PERMISSION_GRANTED);
             if (!hasPermission) {
-                ActivityCompat.requestPermissions(this,new String[] {permission},requestCode);
+                ActivityCompat.requestPermissions(this,new String[] {permission},1);
                 return false;
             }
             return true;
